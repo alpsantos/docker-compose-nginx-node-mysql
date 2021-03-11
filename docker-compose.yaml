@@ -1,0 +1,43 @@
+version: '3'
+
+services: 
+    
+  nginx:
+    build: 
+      context: ../fc-docker-nginx-node
+    container_name: nginx
+    networks:
+      - node-network
+    tty: true
+    ports: 
+      - "8080:80"
+  
+  app:
+    build: 
+      context: ./fc-docker-node-mysql
+    container_name: app
+    networks:
+      - node-network
+    volumes: 
+      - ./fc-docker-node-mysql:/usr/src/app
+    tty: true
+
+
+  db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: db
+    restart: always
+    tty: true
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment: 
+      - MYSQL_DATABASE=nodedb
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - node-network
+
+networks: 
+  node-network:
+    driver: bridge
