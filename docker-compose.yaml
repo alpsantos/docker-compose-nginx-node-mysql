@@ -4,23 +4,29 @@ services:
     
   nginx:
     build: 
-      context: ../fc-docker-nginx-node
+      context: ./fc-docker-nginx-node
     container_name: nginx
     networks:
       - node-network
     tty: true
     ports: 
       - "8080:80"
+    depends_on: 
+      - app
   
   app:
     build: 
       context: ./fc-docker-node-mysql
     container_name: app
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh node index.js
     networks:
       - node-network
     volumes: 
       - ./fc-docker-node-mysql:/usr/src/app
+      #- ./fc-docker-node-mysql/node_modules:/usr/src/app/node_modules
     tty: true
+    depends_on: 
+      - db
 
 
   db:

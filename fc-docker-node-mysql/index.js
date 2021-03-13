@@ -9,17 +9,24 @@ const config = {
   database: 'nodedb'
 };
 
+const mysql = require('mysql')
+var connection = mysql.createConnection(config)
+
+connection.query("DROP TABLE IF EXISTS people;")
+const create_sql = "CREATE TABLE people (id int not null auto_increment, name varchar(255), primary key(id));"
+connection.query(create_sql)
+
+connection.end()
+
 app.get('/', (req, res) => {
 
+  var connection = mysql.createConnection(config)
 
-  const mysql = require('mysql')
-  const connection = mysql.createConnection(config)
-
-  const sql = `INSERT INTO people(name) values ('full_cycle_rocks')`
-  connection.query(sql)
+  const insert_sql = "INSERT INTO people(name) VALUES ('full_cycle_rocks')"
+  connection.query(insert_sql)
 
   connection.query(
-    'SELECT * FROM people',
+    "SELECT * FROM people",
     function (err, rows) {
       if (err) throw err;
 
