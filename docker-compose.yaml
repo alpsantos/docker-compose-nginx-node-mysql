@@ -23,7 +23,7 @@ services:
       - node-network
     volumes: 
       - ./fc-docker-node-mysql:/usr/src/app
-      #- ./fc-docker-node-mysql/node_modules:/usr/src/app/node_modules
+      - ./usr/src/app/node_modules
     tty: true
     depends_on: 
       - db
